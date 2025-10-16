@@ -1,0 +1,28 @@
+import time
+import random
+import numpy as np
+print('Rock Paper Scissor Sim...')
+
+rock=np.array([1,0,0])
+paper=np.array([0,1,0])
+scissor=np.array([0,0,1])
+dict1={
+    '1':rock,
+    '2':paper,
+    '3':scissor
+}
+
+time.sleep(3)
+y=input('PRESS 1 for rock, 2 for paper and 3 for scissor...')
+yurhand=dict1[y]
+
+x=random.choice(dict1.keys())
+enginehand=dict1[x]
+time.sleep(1)
+
+if np.cross(yurhand,enginehand) in dict1.values():
+    print('You win :)')
+elif np.cross(yurhand,enginehand)==np.array([0,0,0]):
+    print('Draw')
+else:
+    print('You lose :(')
