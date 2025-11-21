@@ -1,13 +1,17 @@
-#version 3
+#version 4
+import sys
 import time
 import random
 import numpy as np
 
-print('Rock Paper Scissor Sim...')
+print("==================================================================")
+print('                     ROCK • PAPER • SCISSOR                       ')
+print("==================================================================")
 
 rock = np.array([1,0,0])
 paper = np.array([0,1,0])
 scissor = np.array([0,0,1])
+score_board=[0,0]
 
 dict1 = {
     '1': rock,
@@ -21,23 +25,38 @@ rev = {
     tuple(scissor): "scissor"
 }
 
+def type_print(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.1)
+    print()
+
 while True:
-    y = input('\nPRESS 1 for rock, 2 for paper and 3 for scissor: ')
-    player_move = dict1[y]
+    y = input("Choose your move: \n [1] ✊   Rock \t [2] 🖐  Paper \t [3] ✌️   Scissor \n")
 
     x = random.choice(list(dict1.keys()))
-    opponent_move = dict1[x]
-    print('Opponent plays', rev[tuple(opponent_move)])
+    engine_hand = dict1[x]
+ 
+    type_print("Thinking......")
+    
+    time.sleep(2)
+    print('Engine plays: ', rev[tuple(engine_hand)])
     time.sleep(1)
-    result = np.cross(player_move, opponent_move)
+    result = np.cross(engine_hand,dict1[y])
+    
     if np.array_equal(result, scissor) or np.array_equal(result, paper) or np.array_equal(result, rock):
-        print('You win :)')
+        print('🔥🔥You win !!🔥🔥')
+        score_board[0]+=1
     elif np.array_equal(result, [0,0,0]):
-        print('Draw')
+        print('Draw..😳')
     else:
-        print('You lose :(')
+        print('You lose ?!😭')
+        score_board[1]+=1
 
-    again = input("\nPlay again? (yes/no): ").lower()
+    print(f'Score so far...\tUser: {score_board[0]}\t::\tEngine:{score_board[1]}')
+    again = input("\nContinue playing?? (yes/no): ").lower()
     if again != "yes":
-        print("Thanks for playing!")
+        print("Thanks for playing!Goodbye 👋")
         break
+    
