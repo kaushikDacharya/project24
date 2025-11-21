@@ -1,31 +1,43 @@
-#version2
+#version 3
 import time
 import random
 import numpy as np
+
 print('Rock Paper Scissor Sim...')
 
-rock=np.array([1,0,0])
-paper=np.array([0,1,0])
-scissor=np.array([0,0,1])
-dict1={
-    '1':rock,
-    '2':paper,
-    '3':scissor
+rock = np.array([1,0,0])
+paper = np.array([0,1,0])
+scissor = np.array([0,0,1])
+
+dict1 = {
+    '1': rock,
+    '2': paper,
+    '3': scissor
 }
 
-time.sleep(3)
-y=input('PRESS 1 for rock, 2 for paper and 3 for scissor...')
-yurhand=dict1[y]
+rev = {
+    tuple(rock): "rock",
+    tuple(paper): "paper",
+    tuple(scissor): "scissor"
+}
 
-x=random.choice(list(dict1.keys()))
-enginehand=dict1[x]
-print('Engine plays',str(dict1[x]))
-time.sleep(1.5)
+while True:
+    y = input('\nPRESS 1 for rock, 2 for paper and 3 for scissor: ')
+    player_move = dict1[y]
 
-result=np.cross(yurhand,enginehand)
-if np.array_equal(result, scissor) or np.array_equal(result, paper) or np.array_equal(result, rock):
-    print('You win :)')
-elif list(np.cross(yurhand,enginehand))==[0,0,0]:
-    print('Draw')
-else:
-    print('You lose :(')
+    x = random.choice(list(dict1.keys()))
+    opponent_move = dict1[x]
+    print('Opponent plays', rev[tuple(opponent_move)])
+    time.sleep(1)
+    result = np.cross(player_move, opponent_move)
+    if np.array_equal(result, scissor) or np.array_equal(result, paper) or np.array_equal(result, rock):
+        print('You win :)')
+    elif np.array_equal(result, [0,0,0]):
+        print('Draw')
+    else:
+        print('You lose :(')
+
+    again = input("\nPlay again? (yes/no): ").lower()
+    if again != "yes":
+        print("Thanks for playing!")
+        break
