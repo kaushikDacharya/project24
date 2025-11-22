@@ -11,7 +11,7 @@ print("==================================================================")
 rock = np.array([1,0,0])
 paper = np.array([0,1,0])
 scissor = np.array([0,0,1])
-score_board=[0,0]
+score_board=[0,0,0]
 
 dict1 = {
     '1': rock,
@@ -50,11 +50,12 @@ while True:
         score_board[0]+=1
     elif np.array_equal(result, [0,0,0]):
         print('Draw..😳')
+        score_board[2]+=1
     else:
         print('You lose ?!😭')
         score_board[1]+=1
 
-    print(f'Score so far...\tUser: {score_board[0]}\t::\tEngine:{score_board[1]}')
+    print(f'Wins : {score_board[0]}\t\tLoses : {score_board[1]}\t\tTies : {score_board[2]}')
     again = input("\nContinue playing?? (yes/no): ").lower()
     if again != "yes":
         print("Thanks for playing!Goodbye 👋")
