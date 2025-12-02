@@ -1,63 +1,110 @@
-#version 4
 import sys
 import time
 import random
 import numpy as np
 
-print("==================================================================")
-print('                     ROCK • PAPER • SCISSOR                       ')
-print("==================================================================")
+# initial setup
+ROCK = np.array([1, 0, 0])
+PAPER = np.array([0, 1, 0])
+SCISSOR = np.array([0, 0, 1])
 
-rock = np.array([1,0,0])
-paper = np.array([0,1,0])
-scissor = np.array([0,0,1])
-score_board=[0,0,0]
-
-dict1 = {
-    '1': rock,
-    '2': paper,
-    '3': scissor
+MOVE_MAP = {
+    '1': ROCK,
+    '2': PAPER,
+    '3': SCISSOR
 }
 
-rev = {
-    tuple(rock): "rock",
-    tuple(paper): "paper",
-    tuple(scissor): "scissor"
+# for display
+REV_MOVE_MAP = {
+    tuple(ROCK): "rock",
+    tuple(PAPER): "paper",
+    tuple(SCISSOR): "scissor"
 }
 
-def type_print(text):
+# [wins, losses, ties]
+SCORE_BOARD = [0, 0, 0]
+
+def type_print(text: str, delay: float = 0.05):
+    """Prints text with a typing effect."""
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
-        time.sleep(0.1)
+        time.sleep(delay)
     print()
 
-while True:
-    y = input("Choose your move: \n [1] ✊   Rock \t [2] 🖐  Paper \t [3] ✌️   Scissor \n")
+def welcome():
+    #Displays the game's welcome banner.
+    print("=" * 46)
+    print(' ' * 8 + 'ROCK • PAPER • SCISSORS' + ' ' * 8)
+    print("=" * 46)
 
-    x = random.choice(list(dict1.keys()))
-    engine_hand = dict1[x]
- 
-    type_print("Thinking......")
+def player_move() -> str:
+    #Prompts the user for a move and validates the input.
+    while True:
+        prompt = "\nChoose your move:\n [1] ✊ Rock \t [2] 🖐 Paper \t [3] ✌️ Scissor \n"
+        choice = input(prompt).strip()
+        if choice in MOVE_MAP:
+            return choice
+        print("Invalid choice. Please enter 1, 2, or 3.")
+
+def  score(outcome: str):
+    #Updates the global scoreboard based on the outcome and prints the current status.
+    global SCORE_BOARD
     
-    time.sleep(2)
-    print('Engine plays: ', rev[tuple(engine_hand)])
-    time.sleep(1)
-    result = np.cross(engine_hand,dict1[y])
-    
-    if np.array_equal(result, scissor) or np.array_equal(result, paper) or np.array_equal(result, rock):
+    if outcome == "win":
         print('🔥🔥You win !!🔥🔥')
-        score_board[0]+=1
-    elif np.array_equal(result, [0,0,0]):
-        print('Draw..😳')
-        score_board[2]+=1
-    else:
+        SCORE_BOARD[0] += 1
+    elif outcome == "lose":
         print('You lose ?!😭')
-        score_board[1]+=1
+        SCORE_BOARD[1] += 1
+    else: # tie
+        print('Draw..😳')
+        SCORE_BOARD[2] += 1
+        
+    wins, losses, ties = SCORE_BOARD
+    print(f'\nWins : {wins}\t\tLoses : {losses}\t\tTies : {ties}')
 
-    print(f'Wins : {score_board[0]}\t\tLoses : {score_board[1]}\t\tTies : {score_board[2]}')
-    again = input("\nContinue playing?? (yes/no): ").lower()
-    if again != "yes":
-        print("Thanks for playing!Goodbye 👋")
-        break
+
+def outcome(engine_hand: np.ndarray, player_hand: np.ndarray):
+    
+    #Calculates the outcome using the NumPy cross product and calls the score update function.
+    result = np.cross(engine_hand, player_hand)
+    # Check for a tie
+    if np.array_equal(result, [0, 0, 0]):
+        score("tie")
+    elif any(np.array_equal(result, move) for move in MOVE_MAP.values()):
+        score("lose")
+    # win.
+    else:
+        score("win")
+
+def play_game():
+    """The main game loop."""
+    welcome()
+    
+    while True:
+        # player Move
+        player_choice_key = player_move()
+        player_hand = MOVE_MAP[player_choice_key]
+
+        # engine Move
+        engine_choice_key = random.choice(list(MOVE_MAP.keys()))
+        engine_hand = MOVE_MAP[engine_choice_key]
+
+        type_print("Thinking......")
+        time.sleep(1)
+        print('Engine plays: ', REV_MOVE_MAP[tuple(engine_hand)])
+        time.sleep(0.5)
+
+        # 3. Determine Outcome and Update Score
+        outcome(engine_hand, player_hand)
+        
+        # 4. Continue Prompt
+        again = input("\nContinue playing?? (yes/no): ").lower().strip()
+        if again not in ["yes", "y"]:
+            print("Thanks for playing! Goodbye 👋")
+            break
+
+if __name__ == "__main__":
+    play_game()
     
