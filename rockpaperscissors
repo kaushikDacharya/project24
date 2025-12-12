@@ -1,4 +1,3 @@
-import sys
 import time
 import random
 import numpy as np
@@ -11,7 +10,8 @@ SCISSOR = np.array([0, 0, 1])
 MOVE_MAP = {
     '1': ROCK,
     '2': PAPER,
-    '3': SCISSOR
+    '3': SCISSOR,
+    '4': "QUIT"
 }
 
 # for display
@@ -24,86 +24,72 @@ REV_MOVE_MAP = {
 # [wins, losses, ties]
 SCORE_BOARD = [0, 0, 0]
 
-def type_print(text: str, delay: float = 0.05):
-    """Prints text with a typing effect."""
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(delay)
-    print()
-
 def welcome():
-    #Displays the game's welcome banner.
     print("=" * 46)
     print(' ' * 8 + 'ROCK • PAPER • SCISSORS' + ' ' * 8)
     print("=" * 46)
 
 def player_move() -> str:
-    #Prompts the user for a move and validates the input.
     while True:
-        prompt = "\nChoose your move:\n [1] ✊ Rock \t [2] 🖐 Paper \t [3] ✌️ Scissor \n"
+        prompt = "\nChoose your move:\n [1] ✊ Rock\t [2] 🖐 Paper\t [3] ✌ Scissor\t [4] 🚪 Quit\n"
         choice = input(prompt).strip()
         if choice in MOVE_MAP:
             return choice
-        print("Invalid choice. Please enter 1, 2, or 3.")
+        print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
-def  score(outcome: str):
-    #Updates the global scoreboard based on the outcome and prints the current status.
+def score(outcome: str):
     global SCORE_BOARD
     
     if outcome == "win":
-        print('🔥🔥You win !!🔥🔥')
+        print('🔥🔥 You win !! 🔥🔥')
         SCORE_BOARD[0] += 1
     elif outcome == "lose":
-        print('You lose ?!😭')
+        print('You lose 😭')
         SCORE_BOARD[1] += 1
-    else: # tie
-        print('Draw..😳')
+    else:
+        print('Draw 😳')
         SCORE_BOARD[2] += 1
         
     wins, losses, ties = SCORE_BOARD
-    print(f'\nWins : {wins}\t\tLoses : {losses}\t\tTies : {ties}')
-
+    print(f'\nWins : {wins}\t\tLosses : {losses}\t\tTies : {ties}')
 
 def outcome(engine_hand: np.ndarray, player_hand: np.ndarray):
-    
-    #Calculates the outcome using the NumPy cross product and calls the score update function.
     result = np.cross(engine_hand, player_hand)
-    # Check for a tie
+
     if np.array_equal(result, [0, 0, 0]):
         score("tie")
-    elif any(np.array_equal(result, move) for move in MOVE_MAP.values()):
-        score("lose")
-    # win.
-    else:
+    elif any(np.array_equal(result, move) for move in MOVE_MAP.values() if isinstance(move, np.ndarray)):
+        # Player wins
         score("win")
+    else:
+        # Player loses
+        score("lose")
 
 def play_game():
-    """The main game loop."""
     welcome()
     
     while True:
-        # player Move
         player_choice_key = player_move()
+
+        # Quit option
+        if player_choice_key == '4':
+            print("\nThanks for playing! Goodbye 👋")
+            break
+
         player_hand = MOVE_MAP[player_choice_key]
 
-        # engine Move
-        engine_choice_key = random.choice(list(MOVE_MAP.keys()))
+        # engine Move (only 1,2,3)
+        engine_choice_key = random.choice(['1', '2', '3'])
         engine_hand = MOVE_MAP[engine_choice_key]
 
-        type_print("Thinking......")
+        print("Thinking......")
         time.sleep(1)
-        print('Engine plays: ', REV_MOVE_MAP[tuple(engine_hand)])
+        time.sleep(1)
+        print('Engine plays:', REV_MOVE_MAP[tuple(engine_hand)])
         time.sleep(0.5)
 
-        # 3. Determine Outcome and Update Score
+        # Determine Outcome
         outcome(engine_hand, player_hand)
-        
-        # 4. Continue Prompt
-        again = input("\nContinue playing?? (yes/no): ").lower().strip()
-        if again not in ["yes", "y"]:
-            print("Thanks for playing! Goodbye 👋")
-            break
 
 if __name__ == "__main__":
     play_game()
