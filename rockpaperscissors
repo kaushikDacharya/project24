@@ -29,7 +29,7 @@ def welcome():
     print(' ' * 8 + 'ROCK • PAPER • SCISSORS' + ' ' * 8)
     print("=" * 46)
 
-def player_move() -> str:
+def player_move():
     while True:
         prompt = "\nChoose your move:\n [1] ✊ Rock\t [2] 🖐 Paper\t [3] ✌ Scissor\t [4] 🚪 Quit\n"
         choice = input(prompt).strip()
