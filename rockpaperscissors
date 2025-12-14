@@ -37,7 +37,7 @@ def player_move():
             return choice
         print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
-def score(outcome: str):
+def score(outcome):
     global SCORE_BOARD
     
     if outcome == "win":
