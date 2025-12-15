@@ -53,7 +53,7 @@ def score(outcome):
     wins, losses, ties = SCORE_BOARD
     print(f'\nWins : {wins}\t\tLosses : {losses}\t\tTies : {ties}')
 
-def outcome(engine_hand: np.ndarray, player_hand: np.ndarray):
+def outcome(engine_hand, player_hand):
     result = np.cross(engine_hand, player_hand)
 
     if np.array_equal(result, [0, 0, 0]):
