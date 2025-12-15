@@ -58,7 +58,7 @@ def outcome(engine_hand: np.ndarray, player_hand: np.ndarray):
 
     if np.array_equal(result, [0, 0, 0]):
         score("tie")
-    elif any(np.array_equal(result, move) for move in MOVE_MAP.values() if isinstance(move, np.ndarray)):
+    elif np.array_equal(result,[1,0,0]) or np.array_equal(result,[0,1,0]) or np.array_equal(result,[0,0,1]):
         # Player wins
         score("win")
     else:
